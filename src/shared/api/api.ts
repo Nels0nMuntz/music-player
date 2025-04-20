@@ -1,10 +1,13 @@
-
 import { API_ENDPOINTS } from "./apiEndpoints";
 import { RequestParams } from "../model/types/requestParams";
 import { isError, objectToQueryParams } from "../lib/utils";
 
 type RequestUrl = keyof typeof API_ENDPOINTS;
-type RequestOptions = RequestInit & { params?: string; query?: RequestParams };
+type RequestOptions = Omit<RequestInit, "body"> & {
+  body: any;
+  params?: string;
+  query?: RequestParams;
+};
 type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 const BASE_URL = "http://localhost:3000/api";
@@ -24,8 +27,8 @@ const httpClient = (method: HTTPMethod) => {
       });
       const json = await response.json();
 
-      if (isError(json) && json.statusCode >= 400) {
-        throw new Error(json.message);
+      if (isError(json)) {
+        throw new Error(json.message || json.error);
       }
       return json as ResponseData;
     } catch (error) {
@@ -38,8 +41,8 @@ const httpClient = (method: HTTPMethod) => {
 const get = httpClient("GET");
 const post = (url: RequestUrl, options?: RequestOptions) => {
   return httpClient("POST")(url, {
-    body: JSON.stringify(options?.body || {}),
     ...options,
+    body: JSON.stringify(options?.body || {}),
   });
 };
 

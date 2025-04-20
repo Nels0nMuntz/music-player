@@ -3,6 +3,7 @@ export { Button } from "./tailwind/button";
 export { Checkbox } from "./tailwind/checkbox";
 export { Input } from "./tailwind/input";
 export { Label } from "./tailwind/label";
+export { Badge } from "./tailwind/badge";
 export {
   Select,
   SelectContent,
@@ -45,4 +46,30 @@ export {
   FormMessage,
   useFormField,
 } from "./tailwind/form";
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "./tailwind/dialog";
+export {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "./tailwind/command";
+
 export { Spinner } from "./Spinner";
+export { TrackForm } from "./TrackForm";
+export { MultipleSelector } from "./MultipleSelector";

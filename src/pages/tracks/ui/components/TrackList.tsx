@@ -14,8 +14,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
 import { TasksFilter, useSearchActions, useSearchText } from "@/features/tracks";
+import { useGenresQuery } from "@/shared/api";
 import { useTracksQuery } from "../../api/useTracksQuery";
-import { useGenresQuery } from "../../api/useGenresQuery";
 import { TracksPagination } from "./TracksPagination";
 
 const filteringColumns = ["artist", "genres"];
@@ -74,7 +74,7 @@ export const TrackList = () => {
         header: "Genres",
         accessorKey: "genres",
         enableSorting: false,
-        cell: (info) => <span>{info.row.original.genres.join(", ")}</span>,
+        cell: (info) => <div className="max-w-48 whitespace-normal">{info.row.original.genres.join(", ")}</div>,
       },
       {
         header: "Added",

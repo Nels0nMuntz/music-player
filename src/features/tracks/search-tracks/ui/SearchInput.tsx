@@ -5,11 +5,9 @@ import { useSearchActions, useSearchText, useIsSearching } from "../model/store/
 export const SearchInput: React.FC = () => {
   const searchText = useSearchText();
   const isSearching = useIsSearching();
-  console.log({isSearching});
-  
   const setSearchText = useSearchActions().setSearchText;
   return (
-    <div className="relative  flex items-center gap-x-1 max-w-80">
+    <div className="relative  flex items-center gap-x-1 max-w-80 w-full">
       <Search size={20} className="absolute top-1/2 left-1 -translate-y-1/2" />
       <Label htmlFor="tracks-search" className="sr-only">
         Search by title, artist, or album"
