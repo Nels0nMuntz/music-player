@@ -2,6 +2,7 @@ export { Toaster } from "./tailwind/sonner";
 export { Button } from "./tailwind/button";
 export { Checkbox } from "./tailwind/checkbox";
 export { Input } from "./tailwind/input";
+export { Label } from "./tailwind/label";
 export {
   Select,
   SelectContent,
@@ -44,3 +45,4 @@ export {
   FormMessage,
   useFormField,
 } from "./tailwind/form";
+export { Spinner } from "./Spinner";

@@ -9,7 +9,17 @@ export const useTracksQuery = (options: GetTracksRequest) => {
     error: tracksError,
   } = useQuery({
     queryKey: [QUERY_KEYS.tracks, options],
-    queryFn: () => getTracks(options),
+    queryFn: () => {
+      let params: GetTracksRequest = {};
+      if (options.search) {
+        params.search = options.search;
+      } else if (options?.filters?.artist || options?.filters?.genre) {
+        params.filters = options.filters;
+      } else {
+        params = options;
+      }
+      return getTracks(params);
+    },
   });
   return {
     tracksData,

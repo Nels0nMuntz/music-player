@@ -1,5 +1,5 @@
 export interface GetTracksRequest {
-  pagination: {
+  pagination?: {
     pageIndex: number;
     pageSize: number;
   };
@@ -11,4 +11,5 @@ export interface GetTracksRequest {
     genre?: string;
     artist?: string;
   };
+  search?: string;
 }

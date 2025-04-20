@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   Header,
@@ -11,9 +11,9 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
-import { formatDate } from "@/shared/lib";
+import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
-import { TasksFilter } from "@/features/tracks";
+import { TasksFilter, useSearchActions, useSearchText } from "@/features/tracks";
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { useGenresQuery } from "../../api/useGenresQuery";
 import { TracksPagination } from "./TracksPagination";
@@ -21,6 +21,9 @@ import { TracksPagination } from "./TracksPagination";
 const filteringColumns = ["artist", "genres"];
 
 export const TrackList = () => {
+  const searchText = useSearchText();
+  const { setIsSearching } = useSearchActions();
+  const debouncedSearchText = useDebounce(searchText, 500)
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filters, setFilters] = useState({
     artist: "",
@@ -41,14 +44,8 @@ export const TrackList = () => {
       artist: filters.artist,
       genre: filters.genres,
     },
+    search: debouncedSearchText,
   });
-
-  if (tracksError) {
-    toast.error(tracksError.message);
-  }
-  if (genresError) {
-    toast.error(genresError.message);
-  }
 
   const columns = useMemo<ColumnDef<Track>[]>(
     () => [
@@ -112,11 +109,35 @@ export const TrackList = () => {
     },
   });
 
+  useEffect(() => {
+    if (searchText) {
+      setSorting([]);
+      setPagination({
+        pageIndex: 0,
+        pageSize: 10,
+      });
+      setFilters({
+        artist: "",
+        genres: "",
+      });
+      setIsSearching(isLoadingTracks)
+    } else {
+      setIsSearching(false)
+    }
+  }, [searchText, isLoadingTracks]);
+
   const sortToggler = (header: Header<Track, unknown>) => {
     if (header.column.getCanSort()) {
       header.column.toggleSorting(undefined, true);
     }
   };
+
+  if (tracksError) {
+    toast.error(tracksError.message);
+  }
+  if (genresError) {
+    toast.error(genresError.message);
+  }
 
   const isLoading = isLoadingTracks || isLoadingGenres;
 
@@ -147,6 +168,7 @@ export const TrackList = () => {
                             options={key === "genres" ? genresData : []}
                             onChange={(value) => {
                               setFilters({ ...filters, [key as keyof typeof filters]: value });
+                              setSorting([]);
                               setPagination({
                                 pageIndex: 0,
                                 pageSize: 10,
