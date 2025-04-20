@@ -14,24 +14,15 @@ interface Props {
 
 export const TasksFilter: React.FC<Props> = ({ title, filter, options, onChange }) => {
   const [open, setOpen] = useState(false);
-  // const [filter, setFilter] = useState("");
-  // console.log({filter});
-  
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setOpen(true);
   };
   const handleReset = () => {
-    console.log("handleReset");
-    
-    // setFilter("");
     onChange("");
     setOpen(false);
   };
   const handleApply = (values: FilterFormValues) => {
-    console.log("handleApply", values);
-    
-    // setFilter(values.value);
     onChange(values.value);
     setOpen(false);
   };

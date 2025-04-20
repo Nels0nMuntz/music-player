@@ -26,8 +26,6 @@ export const TrackList = () => {
     artist: "",
     genres: "",
   });
-  console.log(filters);
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -115,8 +113,6 @@ export const TrackList = () => {
   });
 
   const sortToggler = (header: Header<Track, unknown>) => {
-    console.log("sortToggler", { getCanSort: header.column.getCanSort() });
-
     if (header.column.getCanSort()) {
       header.column.toggleSorting(undefined, true);
     }
@@ -149,9 +145,13 @@ export const TrackList = () => {
                             filter={filters[key as keyof typeof filters]}
                             title={`Filter by ${key}`}
                             options={key === "genres" ? genresData : []}
-                            onChange={(value) =>
-                              setFilters({ ...filters, [key as keyof typeof filters]: value })
-                            }
+                            onChange={(value) => {
+                              setFilters({ ...filters, [key as keyof typeof filters]: value });
+                              setPagination({
+                                pageIndex: 0,
+                                pageSize: 10,
+                              });
+                            }}
                           />
                         )}
                         <div

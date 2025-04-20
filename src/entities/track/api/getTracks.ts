@@ -10,6 +10,6 @@ export const getTracks = ({ pagination, sorting, filters }: GetTracksRequest) =>
       sort: sorting?.sortBy,
       order: sorting?.order,
       ...(filters?.artist && { artist: filters.artist }),
-      ...(filters?.genre && { artist: filters.genre }),
+      ...(filters?.genre && { genre: filters.genre }),
     },
   });
