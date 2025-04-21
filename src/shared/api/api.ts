@@ -17,14 +17,15 @@ const httpClient = (method: HTTPMethod) => {
     try {
       const params = options?.params ? `/${options?.params}` : "";
       const query = options?.query ? `?${objectToQueryParams(options.query)}` : "";
+      const isFormData = options?.body instanceof FormData;
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS[url]}${params}${query}`, {
         method,
         headers: {
+          ...(!isFormData && { ["Content-Type"]: "application/json" }),
           ...options?.headers,
         },
         ...options,
       });
-      
       if (response.ok && response.statusText === "No Content") return;
 
       const json = await response.json();
@@ -43,7 +44,7 @@ const httpClient = (method: HTTPMethod) => {
 const get = httpClient("GET");
 const post = (url: RequestUrl, options?: RequestOptions) => {
   const isFormData = options?.body instanceof FormData;
-  const body = isFormData ? options?.body : JSON.stringify(options?.body || {})
+  const body = isFormData ? options?.body : JSON.stringify(options?.body || {});
   return httpClient("POST")(url, {
     ...options,
     body,

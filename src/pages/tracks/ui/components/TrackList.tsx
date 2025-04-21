@@ -10,12 +10,18 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { CirclePlay, CircleX, EllipsisVertical } from "lucide-react";
+import { CirclePlay, EllipsisVertical } from "lucide-react";
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
 import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
 import { useGenresQuery } from "@/entities/genres";
-import { TasksFilter, UploadTrackButton, useSearchActions, useSearchText } from "@/features/tracks";
+import {
+  DeleteFileButton,
+  TasksFilter,
+  UploadTrackButton,
+  useSearchActions,
+  useSearchText,
+} from "@/features/tracks";
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
 import { ActionsMenu } from "./ActionsMenu";
@@ -62,11 +68,9 @@ export const TrackList = () => {
           return (
             <div className="flex gap-x-1">
               <Button size="icon" variant="outline" className="cursor-pointer">
-                <CirclePlay/>
+                <CirclePlay />
               </Button>
-              <Button size="icon" variant="outline" className="cursor-pointer">
-                <CircleX/>
-              </Button>
+              <DeleteFileButton trackId={info.row.original.id} />
             </div>
           );
         },

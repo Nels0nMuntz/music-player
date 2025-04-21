@@ -7,4 +7,5 @@ export { createTrack } from "./api/createTrack";
 export { updateTrack } from "./api/updateTrack";
 export { deleteTrack } from "./api/deleteTrack";
 export { uploadAudioFile } from "./api/uploadAudioFile";
+export { deleteFile } from "./api/deleteFile";
 export { useTrackQuery } from "./api/useTrackQuery";
