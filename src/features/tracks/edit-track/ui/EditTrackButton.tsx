@@ -26,13 +26,13 @@ export const EditTrackButton: React.FC<Props> = ({ track, onCloseDialog }) => {
       onOpenChange={handleOpenChange}
       title={track.title}
       trigger={
-        <Button variant="ghost" className="w-full flex items-center gap-x-2">
+        <Button variant="ghost" className="w-full flex items-center gap-x-4">
           <Pencil className="shrink-0" />
-          <span className="grow text-center">Edit</span>
+          <span className="grow text-left">Edit</span>
         </Button>
       }
     >
-      <EditTrackForm track={track} onSubmitted={handleSubmitted} />
+      <EditTrackForm track={track} onUpdated={handleSubmitted} />
     </EditTrackDialog>
   );
 };

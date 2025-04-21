@@ -86,6 +86,19 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./tailwind/dropdown-menu";
+export {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./tailwind/alert-dialog";
 
 export { Spinner } from "./Spinner";
 export { TrackForm } from "./TrackForm";

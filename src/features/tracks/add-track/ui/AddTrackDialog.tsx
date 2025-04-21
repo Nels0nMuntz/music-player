@@ -1,11 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/shared/ui";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/ui";
 
 interface Props extends PropsWithChildren {
   trigger: React.ReactNode;
@@ -19,7 +13,7 @@ export const AddTrackDialog: React.FC<Props> = ({ trigger, open, children, onOpe
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add track</DialogTitle>
+          <DialogTitle>Add a track</DialogTitle>
         </DialogHeader>
         {children}
       </DialogContent>

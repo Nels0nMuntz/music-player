@@ -1,5 +1,5 @@
 import { PropsWithChildren, useState } from "react";
-import { EditTrackButton } from "@/features/tracks";
+import { DeleteTrackButton, EditTrackButton } from "@/features/tracks";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,9 @@ export const ActionsMenu: React.FC<Props> = ({ track, children }) => {
       <DropdownMenuContent>
         <DropdownMenuItem asChild>
           <EditTrackButton track={track} onCloseDialog={closeMenu} />
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <DeleteTrackButton trackId={track.id} onCloseDialog={closeMenu} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

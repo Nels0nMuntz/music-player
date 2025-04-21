@@ -5,10 +5,10 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface Options {
-  onSubmitted: () => void;
+  onSuccess: () => void;
 }
 
-export const useAddTrackMutation = ({ onSubmitted }: Options) => {
+export const useAddTrackMutation = ({ onSuccess }: Options) => {
   return useMutation({
     mutationFn: createTrack,
     onMutate: async (newRecord) => {
@@ -31,7 +31,7 @@ export const useAddTrackMutation = ({ onSubmitted }: Options) => {
     },
     onSuccess: () => {
       toast.success("The track has been added");
-      onSubmitted();
+      onSuccess();
     },
     onError: (error, _, context?: { prevRecords: unknown }) => {
       toast.error(error.message);

@@ -1,4 +1,3 @@
-
 import { Loader2 } from "lucide-react";
 import { useGenresQuery } from "@/entities/genres";
 import { CreateTrackRequest } from "@/entities/track";
@@ -11,7 +10,7 @@ interface Props {
 
 export const AddTrackForm: React.FC<Props> = ({ onSubmitted }) => {
   const { genresData = [] } = useGenresQuery();
-  const { mutate, isPending } = useAddTrackMutation({ onSubmitted });
+  const { mutate, isPending } = useAddTrackMutation({ onSuccess: onSubmitted });
   const handleSubmit = (values: CreateTrackRequest) => {
     mutate({
       title: values.title.trim(),
@@ -28,11 +27,11 @@ export const AddTrackForm: React.FC<Props> = ({ onSubmitted }) => {
       actions={
         <DialogFooter className="sm:justify-end">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" className="min-w-24">
               Close
             </Button>
           </DialogClose>
-          <Button type="submit" variant="default" disabled={isPending}>
+          <Button type="submit" variant="default" disabled={isPending} className="min-w-24">
             {isPending ? <Loader2 className="animate-spin" /> : "Create"}
           </Button>
         </DialogFooter>

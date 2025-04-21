@@ -6,12 +6,12 @@ import { useEditTrackMutation } from "../api/useEditTrackMutation";
 
 interface Props {
   track: Track;
-  onSubmitted: () => void;
+  onUpdated: () => void;
 }
 
-export const EditTrackForm: React.FC<Props> = ({ track, onSubmitted }) => {
+export const EditTrackForm: React.FC<Props> = ({ track, onUpdated }) => {
   const { genresData = [] } = useGenresQuery();
-  const { mutate, isPending } = useEditTrackMutation({ onSubmitted });
+  const { mutate, isPending } = useEditTrackMutation({ onSuccess: onUpdated });
   const handleSubmit = (values: CreateTrackRequest) => {
     mutate({
       id: track.id,
@@ -36,11 +36,11 @@ export const EditTrackForm: React.FC<Props> = ({ track, onSubmitted }) => {
       actions={
         <DialogFooter className="sm:justify-end">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" className="min-w-24">
               Close
             </Button>
           </DialogClose>
-          <Button type="submit" variant="default" disabled={isPending}>
+          <Button type="submit" variant="default" disabled={isPending} className="min-w-24">
             {isPending ? <Loader2 className="animate-spin" /> : "Update"}
           </Button>
         </DialogFooter>

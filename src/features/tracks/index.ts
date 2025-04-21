@@ -7,3 +7,7 @@ export { useSearchText, useSearchActions } from "./search-tracks/model/store/sea
 export { AddTrackButton } from "./add-track/ui/AddTrackButton";
 
 export { EditTrackButton } from "./edit-track/ui/EditTrackButton";
+
+export { DeleteTrackButton } from "./delete-track/ui/DeleteTrackButton";
+
+export { UploadTrackButton } from "./upload-track/ui/UploadTrackButton";

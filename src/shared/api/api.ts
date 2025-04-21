@@ -20,11 +20,13 @@ const httpClient = (method: HTTPMethod) => {
       const response = await fetch(`${BASE_URL}${API_ENDPOINTS[url]}${params}${query}`, {
         method,
         headers: {
-          "Content-Type": "application/json",
           ...options?.headers,
         },
         ...options,
       });
+      
+      if (response.ok && response.statusText === "No Content") return;
+
       const json = await response.json();
 
       if (isError(json)) {
@@ -40,13 +42,21 @@ const httpClient = (method: HTTPMethod) => {
 
 const get = httpClient("GET");
 const post = (url: RequestUrl, options?: RequestOptions) => {
+  const isFormData = options?.body instanceof FormData;
+  const body = isFormData ? options?.body : JSON.stringify(options?.body || {})
   return httpClient("POST")(url, {
     ...options,
-    body: JSON.stringify(options?.body || {}),
+    body,
   });
 };
 const put = (url: RequestUrl, options?: RequestOptions) => {
   return httpClient("PUT")(url, {
+    ...options,
+    body: JSON.stringify(options?.body || {}),
+  });
+};
+const remove = (url: RequestUrl, options?: RequestOptions) => {
+  return httpClient("DELETE")(url, {
     ...options,
     body: JSON.stringify(options?.body || {}),
   });
@@ -56,4 +66,5 @@ export const api = {
   get,
   post,
   put,
+  remove,
 };
