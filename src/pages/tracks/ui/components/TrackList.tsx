@@ -1,46 +1,43 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
   Header,
   flexRender,
   useReactTable,
   ColumnDef,
-  PaginationState,
-  SortingState,
   getCoreRowModel,
   getPaginationRowModel,
+  SortingState,
+  PaginationState,
 } from "@tanstack/react-table";
 import { CirclePlay, EllipsisVertical } from "lucide-react";
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
 import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
 import { useGenresQuery } from "@/entities/genres";
+import { DeleteFileButton, TasksFilter, UploadTrackButton } from "@/features/tracks";
 import {
-  DeleteFileButton,
-  TasksFilter,
-  UploadTrackButton,
-  useSearchActions,
+  useSorting,
+  useFilters,
+  usePagination,
   useSearchText,
-} from "@/features/tracks";
+  useSettingsActions,
+} from "@/shared/model";
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
 import { ActionsMenu } from "./ActionsMenu";
 
+type OnChangeFn<T> = (updaterOrValue: T | ((old: T) => T)) => void;
+
 const filteringColumns = ["artist", "genres"];
 
 export const TrackList = () => {
+  const sorting = useSorting();
+  const filters = useFilters();
+  const pagination = usePagination();
   const searchText = useSearchText();
-  const { setIsSearching } = useSearchActions();
   const debouncedSearchText = useDebounce(searchText, 500);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [filters, setFilters] = useState({
-    artist: "",
-    genres: "",
-  });
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const { setSorting, setFilters, setPagination, setIsSearching } = useSettingsActions();
   const { genresData = [], genresError, isLoadingGenres } = useGenresQuery();
   const { tracksData, tracksError, isLoadingTracks } = useTracksQuery({
     pagination,
@@ -119,20 +116,36 @@ export const TrackList = () => {
     [],
   );
 
+  const handleSortingChange = useCallback<OnChangeFn<SortingState>>(
+    (updaterOrValue) => {
+      setSorting(typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue);
+    },
+    [sorting, setSorting],
+  );
+
+  const handlePaginationChange = useCallback<OnChangeFn<PaginationState>>(
+    (updaterOrValue) => {
+      setPagination(
+        typeof updaterOrValue === "function" ? updaterOrValue(pagination) : updaterOrValue,
+      );
+    },
+    [pagination, setPagination],
+  );
+
   const table = useReactTable({
     data: tracksData?.data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
 
     // Sort configuration
-    onSortingChange: setSorting,
+    onSortingChange: handleSortingChange,
     enableMultiSort: false,
     manualSorting: true,
     sortDescFirst: true,
 
     // Pagination configuration
     getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
     rowCount: tracksData?.meta.total,
     pageCount: Math.ceil((tracksData?.meta.total || 0) / (tracksData?.meta.limit || 10)),
     manualPagination: true,

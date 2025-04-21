@@ -1,11 +1,12 @@
-import { Input, Label, Spinner } from "@/shared/ui";
 import { Search } from "lucide-react";
-import { useSearchActions, useSearchText, useIsSearching } from "../model/store/searchStore";
+import { useSearchText } from "@/shared/model";
+import { Input, Label, Spinner } from "@/shared/ui";
+import { useIsSearching, useSettingsActions } from "@/shared/model/stores/settingsStore";
 
 export const SearchInput: React.FC = () => {
   const searchText = useSearchText();
   const isSearching = useIsSearching();
-  const setSearchText = useSearchActions().setSearchText;
+  const { setSearchText } = useSettingsActions();
   return (
     <div className="relative  flex items-center gap-x-1 max-w-80 w-full">
       <Search size={20} className="absolute top-1/2 left-1 -translate-y-1/2" />

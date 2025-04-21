@@ -1,4 +1,4 @@
 import { z } from "zod";
-import { trackFormSchema } from "../schema/trackFormSchema";
+import { trackFormSchema } from "../schemas/trackFormSchema";
 
 export type TrackFormValues = z.infer<typeof trackFormSchema>;

@@ -20,6 +20,7 @@ export const useTracksQuery = (options: GetTracksRequest) => {
       }
       return getTracks(params);
     },
+    placeholderData: (oldData) => oldData
   });
   return {
     tracksData,

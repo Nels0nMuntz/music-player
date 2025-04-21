@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { TrackFormValues } from "../model/types/trackFormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Genre } from "@/entities/genres";
-import { trackFormSchema } from "../model/schema/trackFormSchema";
+import { trackFormSchema } from "../model/schemas/trackFormSchema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./tailwind/form";
 import { TextField } from "./TextField";
 import { MultipleSelector } from "./MultipleSelector";
