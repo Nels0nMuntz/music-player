@@ -7,7 +7,6 @@ const commonString = z
   .regex(/^[a-zA-Z0-9\s.,!?'"-_:/;]+$/, {
     message: "Only letters, numbers, spaces, and common symbols are allowed",
   });
-const imageUrlRegex = /\.(jpg|jpeg|png|webp)$/i;
 
 export const trackFormSchema = z.object({
   title: commonString.max(50, { message: "Title must be 50 characters or fewer" }),
@@ -18,6 +17,7 @@ export const trackFormSchema = z.object({
     .regex(/^[a-zA-Z0-9\s.,!?'"-_:/;]+$/, {
       message: "Only letters, numbers, spaces, and common symbols are allowed",
     })
+    .optional()
     .or(z.literal("")),
   genres: z
     .array(z.object({ label: z.string(), value: z.string() }))
@@ -26,8 +26,6 @@ export const trackFormSchema = z.object({
   coverImage: z
     .string()
     .url({ message: "Cover image must be a valid URL." })
-    .refine((url) => imageUrlRegex.test(url), {
-      message: "Cover image URL must end with a valid image extension (jpg, png, etc.).",
-    })
+    .optional()
     .or(z.literal("")),
 });

@@ -10,20 +10,22 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
 import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
+import { useGenresQuery } from "@/entities/genres";
 import { TasksFilter, useSearchActions, useSearchText } from "@/features/tracks";
-import { useGenresQuery } from "@/shared/api";
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
+import { EllipsisVertical } from "lucide-react";
+import { ActionsMenu } from "./ActionsMenu";
 
 const filteringColumns = ["artist", "genres"];
 
 export const TrackList = () => {
   const searchText = useSearchText();
   const { setIsSearching } = useSearchActions();
-  const debouncedSearchText = useDebounce(searchText, 500)
+  const debouncedSearchText = useDebounce(searchText, 500);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filters, setFilters] = useState({
     artist: "",
@@ -74,13 +76,26 @@ export const TrackList = () => {
         header: "Genres",
         accessorKey: "genres",
         enableSorting: false,
-        cell: (info) => <div className="max-w-48 whitespace-normal">{info.row.original.genres.join(", ")}</div>,
+        cell: (info) => (
+          <div className="max-w-48 whitespace-normal">{info.row.original.genres.join(", ")}</div>
+        ),
       },
       {
         header: "Added",
         accessorKey: "createdAt",
         enableSorting: true,
         cell: (info) => <span>{formatDate(info.row.original.createdAt)}</span>,
+      },
+      {
+        header: "",
+        accessorKey: "more",
+        cell: (info) => (
+          <ActionsMenu track={info.row.original}>
+            <Button size="icon" variant="ghost" className="cursor-pointer">
+              <EllipsisVertical />
+            </Button>
+          </ActionsMenu>
+        ),
       },
     ],
     [],
@@ -120,9 +135,9 @@ export const TrackList = () => {
         artist: "",
         genres: "",
       });
-      setIsSearching(isLoadingTracks)
+      setIsSearching(isLoadingTracks);
     } else {
-      setIsSearching(false)
+      setIsSearching(false);
     }
   }, [searchText, isLoadingTracks]);
 
@@ -145,7 +160,7 @@ export const TrackList = () => {
 
   return (
     <div className="flex flex-col gap-y-4 -ml-4 -mr-4">
-      <Table className="border-separate border-spacing-x-0 border-spacing-y-3 px-4 pb-2">
+      <Table className="border-separate border-spacing-x-0 border-spacing-y-4 px-4 pb-2">
         <TableHeader>
           {table.getHeaderGroups().map((header) => (
             <TableRow
@@ -160,7 +175,7 @@ export const TrackList = () => {
                     className="py-2 border-y-2 border-primary first-of-type:border-l-2 last-of-type:border-r-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl nth-1:w-[10%] nth-1:min-w-[10%] nth-1:max-w-[10%] nth-2:w-[25%] nth-2:min-w-[25%] nth-2:max-w-[25%] nth-3:w-[20%] nth-3:min-w-[20%] nth-3:max-w-[20%] nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%] nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%] nth-6:w-[10%] nth-6:min-w-[10%] nth-6:max-w-[10%]"
                   >
                     {header.isPlaceholder ? null : (
-                      <div className="flex items-center gap-x-2 select-none">
+                      <div className="flex items-center gap-x-0.5 select-none">
                         {filteringColumns.includes(key) && (
                           <TasksFilter
                             filter={filters[key as keyof typeof filters]}

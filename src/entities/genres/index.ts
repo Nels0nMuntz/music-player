@@ -1,3 +1,3 @@
 export type { Genre } from "./model/types/genre";
 
-export { getGenres } from "./api/getGenres";
+export { useGenresQuery } from "./api/useGenresQuery";

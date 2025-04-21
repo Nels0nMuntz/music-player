@@ -4,7 +4,7 @@ import { isError, objectToQueryParams } from "../lib/utils";
 
 type RequestUrl = keyof typeof API_ENDPOINTS;
 type RequestOptions = Omit<RequestInit, "body"> & {
-  body: any;
+  body?: any;
   params?: string;
   query?: RequestParams;
 };
@@ -45,8 +45,15 @@ const post = (url: RequestUrl, options?: RequestOptions) => {
     body: JSON.stringify(options?.body || {}),
   });
 };
+const put = (url: RequestUrl, options?: RequestOptions) => {
+  return httpClient("PUT")(url, {
+    ...options,
+    body: JSON.stringify(options?.body || {}),
+  });
+};
 
 export const api = {
   get,
   post,
+  put,
 };

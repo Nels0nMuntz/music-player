@@ -1,16 +1,16 @@
-import { createTrack, Track } from "@/entities/track";
-import { QUERY_KEYS } from "@/shared/api";
-import { queryClient } from "@/shared/configs";
 import { useMutation } from "@tanstack/react-query";
+import { Track, updateTrack } from "@/entities/track";
+import { queryClient } from "@/shared/configs";
+import { QUERY_KEYS } from "@/shared/api";
 import { toast } from "sonner";
 
 interface Options {
   onSubmitted: () => void;
 }
 
-export const useAddTrackMutation = ({ onSubmitted }: Options) => {
+export const useEditTrackMutation = ({ onSubmitted }: Options) => {
   return useMutation({
-    mutationFn: createTrack,
+    mutationFn: updateTrack,
     onMutate: async (newRecord) => {
       await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.tracks] });
       const prevRecords = queryClient.getQueryData([QUERY_KEYS.tracks]);
@@ -27,6 +27,7 @@ export const useAddTrackMutation = ({ onSubmitted }: Options) => {
         } as Track,
         ...(oldRecords || []),
       ]);
+
       return { prevRecords };
     },
     onSuccess: () => {
@@ -37,8 +38,6 @@ export const useAddTrackMutation = ({ onSubmitted }: Options) => {
       toast.error(error.message);
       queryClient.setQueryData([QUERY_KEYS.tracks], context?.prevRecords);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.tracks] });
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.tracks] }),
   });
 };

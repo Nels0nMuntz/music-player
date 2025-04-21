@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getGenres } from "@/entities/genres";
 import { QUERY_KEYS } from "@/shared/api";
+import { getGenres } from "./getGenres";
 
 export const useGenresQuery = () => {
   const {
@@ -10,6 +10,7 @@ export const useGenresQuery = () => {
   } = useQuery({
     queryKey: [QUERY_KEYS.genres],
     queryFn: getGenres,
+    staleTime: 1000 * 60 * 15,
   });
   return {
     genresData,

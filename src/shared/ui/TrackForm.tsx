@@ -84,7 +84,7 @@ export const TrackForm: React.FC<Props> = ({ values, actions, genres, onSubmit }
         />
         <TextField control={form.control} name="album" label="Album" />
         <CoverLoader
-          url={imageUrl}
+          url={imageUrl || ""}
           control={form.control}
           name="coverImage"
           label="Cover image"
