@@ -11,7 +11,7 @@ const playerStore = create<PlayerStore>()((set) => ({
   isInitialized: false,
   isAllTracksPlayed: false,
   hasNext: true,
-  hasPrevious: true,
+  hasPrevious: false,
   direction: "next",
   isWaitingForNewList: true,
   isListUpdated: false,

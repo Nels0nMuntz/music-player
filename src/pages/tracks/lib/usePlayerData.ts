@@ -4,10 +4,11 @@ import {
   useTrack,
   useTrackIndex,
   useList,
-  useIsInitialized,
   usePlayerActions,
   useDirection,
   useIsListUpdated,
+  useHasNext,
+  useHasPrevious,
 } from "@/shared/model";
 import { useDebounce } from "@/shared/lib";
 import { useTracksQuery } from "../api/useTracksQuery";
@@ -16,8 +17,9 @@ export const usePlayerData = () => {
   const list = useList();
   const track = useTrack();
   const trackIndex = useTrackIndex();
-  const isInitialized = useIsInitialized();
   const direction = useDirection();
+  const hasNextPage = useHasNext();
+  const hasPreviousPage = useHasPrevious();
   const {
     setTrack,
     setTrackIndex,
@@ -26,6 +28,8 @@ export const usePlayerData = () => {
     setDirection,
     setIsWaitingForNewList,
     setIsListUpdated,
+    setHasPrevious,
+    setHasNext,
   } = usePlayerActions();
   const sorting = useSorting();
   const filters = useFilters();
@@ -49,16 +53,15 @@ export const usePlayerData = () => {
     search: debouncedSearchText,
   });
 
-  const hasNext = !!tracksData?.meta && tracksData.meta.page < tracksData.meta.totalPages;
-  const hasPrevious = playerPagination.pageIndex > 0;
-
   const setNextTrack = () => {
     setDirection("next");
     const nextTrackIndex = trackIndex + 1;
+    // console.log("next", {trackIndex, nextTrackIndex, nextItem: list[nextTrackIndex], hasNext});
+
     if (list[nextTrackIndex]) {
       setTrack(list[nextTrackIndex]);
       setTrackIndex(nextTrackIndex);
-    } else if (hasNext) {
+    } else if (hasNextPage) {
       fetchNextPage();
       setIsWaitingForNewList(true);
     }
@@ -67,7 +70,8 @@ export const usePlayerData = () => {
   const setPrevTrack = () => {
     setDirection("previous");
     const prevTrackIndex = trackIndex - 1;
-    if (prevTrackIndex < 0 && hasPrevious) {
+    // console.log("previous", {trackIndex, prevTrackIndex, nextItem: list[prevTrackIndex], hasPrevious});
+    if (prevTrackIndex < 0 && hasPreviousPage) {
       fetchPreviousPage();
       setIsWaitingForNewList(true);
     } else {
@@ -77,34 +81,38 @@ export const usePlayerData = () => {
   };
 
   const fetchNextPage = useCallback(() => {
-    if (isLoadingTracks || !hasNext) return;
+    if (isLoadingTracks || !hasNextPage) return;
+    const newPageIndex = playerPagination.pageIndex + 1;
     setPlayerPagination({
       ...playerPagination,
-      pageIndex: playerPagination.pageIndex + 1,
+      pageIndex: newPageIndex,
     });
-  }, [playerPagination, hasNext, isLoadingTracks]);
+  }, [playerPagination, hasNextPage, isLoadingTracks]);
 
   const fetchPreviousPage = useCallback(() => {
-    if (isLoadingTracks || !hasPrevious) return;
+    if (isLoadingTracks || !hasPreviousPage) return;
+    const newPageIndex = playerPagination.pageIndex - 1;
     setPlayerPagination({
       ...playerPagination,
-      pageIndex: playerPagination.pageIndex - 1,
+      pageIndex: newPageIndex,
     });
-  }, [playerPagination, hasPrevious, isLoadingTracks]);
+  }, [playerPagination, hasPreviousPage, isLoadingTracks]);
 
   // update list
   useEffect(() => {
     if (!tracksData?.data?.length) return;
-
     const listData = tracksData.data.filter(({ audioFile }) => !!audioFile);
-
     if (listData.length) {
       setList(listData);
-      return;
     }
+  }, [tracksData]);
 
+  useEffect(() => {
+    if (!tracksData?.data?.length) return;
+    const listData = tracksData.data.filter(({ audioFile }) => !!audioFile);
+    if (listData.length) return;
     if (direction === "next") {
-      if (hasNext) {
+      if (hasNextPage) {
         fetchNextPage();
         return;
       } else {
@@ -112,7 +120,7 @@ export const usePlayerData = () => {
         return;
       }
     } else if (direction === "previous") {
-      if (hasPrevious) {
+      if (hasPreviousPage) {
         fetchPreviousPage();
         return;
       } else {
@@ -120,7 +128,7 @@ export const usePlayerData = () => {
         return;
       }
     }
-  }, [tracksData, hasNext, hasPrevious, direction, fetchNextPage]);
+  }, [tracksData, hasNextPage, hasPreviousPage, direction, fetchNextPage, fetchPreviousPage]);
 
   useEffect(() => {
     setIsInitialized(true);
@@ -151,13 +159,11 @@ export const usePlayerData = () => {
   // sync pagination
   useEffect(() => setPlayerPagination(pagination), [pagination]);
 
-  return {
-    isInitialized,
-    hasNext,
-    hasPrevious,
-    track,
-    trackIndex,
-    setNextTrack,
-    setPrevTrack,
-  };
+  // sync hasPreviousPage
+  useEffect(() => setHasPrevious(playerPagination.pageIndex > 0), [playerPagination]);
+
+  // sync hasNextPage
+  useEffect(() => setHasNext(tracksData ? tracksData.meta.page < tracksData.meta.totalPages : false), [tracksData]);
+
+  return { setNextTrack, setPrevTrack };
 };
