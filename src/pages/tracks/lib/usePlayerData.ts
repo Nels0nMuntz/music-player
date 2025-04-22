@@ -115,25 +115,24 @@ export const usePlayerData = () => {
       if (hasNextPage) {
         fetchNextPage();
         return;
-      } else {
-        setIsInitialized(true);
-        return;
       }
     } else if (direction === "previous") {
       if (hasPreviousPage) {
         fetchPreviousPage();
-        return;
-      } else {
-        setIsInitialized(true);
         return;
       }
     }
   }, [tracksData, hasNextPage, hasPreviousPage, direction, fetchNextPage, fetchPreviousPage]);
 
   useEffect(() => {
-    setIsInitialized(true);
     setIsListUpdated(true);
   }, [list]);
+
+  useEffect(() => {
+    if (track) {
+      setIsInitialized(true);
+    }
+  }, [track]);
 
   // set initial track
   useEffect(() => {
@@ -163,7 +162,10 @@ export const usePlayerData = () => {
   useEffect(() => setHasPrevious(playerPagination.pageIndex > 0), [playerPagination]);
 
   // sync hasNextPage
-  useEffect(() => setHasNext(tracksData ? tracksData.meta.page < tracksData.meta.totalPages : false), [tracksData]);
+  useEffect(
+    () => setHasNext(tracksData ? tracksData.meta.page < tracksData.meta.totalPages : false),
+    [tracksData],
+  );
 
   return { setNextTrack, setPrevTrack };
 };

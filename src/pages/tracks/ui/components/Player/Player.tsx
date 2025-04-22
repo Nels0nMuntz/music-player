@@ -5,6 +5,7 @@ import {
   CirclePause,
   CirclePlay,
   Loader2,
+  Music4,
 } from "lucide-react";
 import { API_BASE_URL } from "@/shared/configs";
 import { Button } from "@/shared/ui";
@@ -125,19 +126,28 @@ export const Player = () => {
       key={track?.id}
       className="w-full max-w-2xl mx-auto flex flex-col items-center p-6 rounded-4xl shadow-player border-2 border-primary"
     >
-      <div className="w-full text-right">
-        <span className="text-muted-foreground">Next - </span>
-        <span className="font-medium text-foreground">Utopia</span>
+      <div className="my-4">
+        {track?.coverImage ? (
+          <img src={track.coverImage} width={144} height={144} className="w-36 h-36 rounded-xl" />
+        ) : (
+          <div className="w-36 h-36 rounded-xl border-primary border-2 flex items-center justify-center shrink-0 bg-gradient-to-br from-[#A678D5] to-[#F6F1FA]">
+            <Music4 className="text-primary size-12" />
+          </div>
+        )}
       </div>
-      <div className="mt-4">
-        <div className="w-32 h-32 rounded-xl bg-indigo-700"></div>
-      </div>
-      <h3 className="font-medium text-2xl">Torashu calm</h3>
-      <div className="font-medium text-muted-foreground">LoFi HipHop</div>
+      {track ? (
+        <h3 className="font-medium text-xl text-center max-w-60 mx-auto">{track.title}</h3>
+      ) : (
+        <h3 className="font-medium max-w-60 mx-auto text-center">
+          Upload your tracks to start listening and vibingUpload your tracks to start listening and
+          vibing
+        </h3>
+      )}
+      {track && <div className="font-medium text-sm text-muted-foreground max-w-60 mx-auto">{track.genres.join(", ")}</div>}
       {/* <div className="text-sm font-mono">
         {formatTime(currentTime)} / {formatTime(duration)}
       </div> */}
-      <div className="flex items-center gap-x-2 mt-6">
+      <div className="flex items-center gap-x-2 mt-4 p-3 rounded-xl bg-background-accent border border-primary">
         <Button
           variant="link"
           onClick={playPrev}

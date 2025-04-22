@@ -3,9 +3,6 @@ import { Skeleton } from "@/shared/ui";
 export const PlayerSkeleton = () => {
   return (
     <section className="w-full max-w-2xl mx-auto flex flex-col items-center p-6 rounded-4xl shadow-player border-2 border-primary">
-      <div className="w-full text-right">
-        <Skeleton className="inline-block h-4 w-24" />
-      </div>
 
       <div className="mt-4">
         <Skeleton className="w-32 h-32 rounded-xl" />
