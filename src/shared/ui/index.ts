@@ -99,6 +99,7 @@ export {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./tailwind/alert-dialog";
+export { Skeleton } from "./tailwind/skeleton";
 
 export { Spinner } from "./Spinner";
 export { TrackForm } from "./TrackForm";

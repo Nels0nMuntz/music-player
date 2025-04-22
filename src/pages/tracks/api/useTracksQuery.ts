@@ -1,8 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryObserverOptions, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/shared/api";
-import { getTracks, GetTracksRequest } from "@/entities/track";
+import { getTracks, GetTracksRequest, GetTracksResponse } from "@/entities/track";
 
-export const useTracksQuery = (options: GetTracksRequest) => {
+interface Options extends GetTracksRequest {
+  queryOptions?: Partial<QueryObserverOptions<GetTracksResponse | undefined>>;
+}
+
+export const useTracksQuery = (options: Options) => {
   const {
     data: tracksData,
     isLoading: isLoadingTracks,
@@ -20,7 +24,7 @@ export const useTracksQuery = (options: GetTracksRequest) => {
       }
       return getTracks(params);
     },
-    placeholderData: (oldData) => oldData
+    ...options?.queryOptions,
   });
   return {
     tracksData,

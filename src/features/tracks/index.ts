@@ -12,3 +12,5 @@ export { DeleteTrackButton } from "./delete-track/ui/DeleteTrackButton";
 export { UploadTrackButton } from "./upload-file/ui/UploadTrackButton";
 
 export { DeleteFileButton } from "./delete-file/ui/DeleteFileButton";
+
+export { PlayTrackButton } from "./play-track/ui/PlayTrackButton";

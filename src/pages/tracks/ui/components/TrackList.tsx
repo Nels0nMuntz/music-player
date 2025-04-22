@@ -10,12 +10,12 @@ import {
   SortingState,
   PaginationState,
 } from "@tanstack/react-table";
-import { CirclePlay, EllipsisVertical } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
 import { formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
 import { useGenresQuery } from "@/entities/genres";
-import { DeleteFileButton, TasksFilter, UploadTrackButton } from "@/features/tracks";
+import { DeleteFileButton, PlayTrackButton, TasksFilter, UploadTrackButton } from "@/features/tracks";
 import {
   useSorting,
   useFilters,
@@ -50,6 +50,9 @@ export const TrackList = () => {
       genre: filters.genres,
     },
     search: debouncedSearchText,
+    queryOptions: {
+      placeholderData: (oldData) => oldData,
+    },
   });
 
   const columns = useMemo<ColumnDef<Track>[]>(
@@ -63,10 +66,8 @@ export const TrackList = () => {
             return <UploadTrackButton trackId={info.row.original.id} />;
           }
           return (
-            <div className="flex gap-x-1">
-              <Button size="icon" variant="outline" className="cursor-pointer">
-                <CirclePlay />
-              </Button>
+            <div className="flex gap-x-1.5">
+              <PlayTrackButton track={info.row.original} />
               <DeleteFileButton trackId={info.row.original.id} />
             </div>
           );
@@ -191,12 +192,12 @@ export const TrackList = () => {
 
   return (
     <div className="flex flex-col gap-y-4 -ml-4 -mr-4">
-      <Table className="border-separate border-spacing-x-0 border-spacing-y-4 px-4 pb-2">
+      <Table className="border-separate border-spacing-x-0 border-spacing-y-3 px-4 pb-2">
         <TableHeader>
           {table.getHeaderGroups().map((header) => (
             <TableRow
               key={header.id}
-              className="bg-white hover:bg-white shadow-lg rounded-xl overflow-hidden"
+              className="bg-white hover:bg-white shadow-table rounded-xl overflow-hidden"
             >
               {header.headers.map((header) => {
                 const key = header.id;
@@ -252,12 +253,12 @@ export const TrackList = () => {
           {table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
-              className="bg-white hover:bg-white shadow-lg rounded-xl overflow-hidden"
+              className="bg-white hover:bg-white shadow-table rounded-xl overflow-hidden"
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell
                   key={cell.id}
-                  className="py-4 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl nth-1:w-[10%] nth-1:min-w-[10%] nth-1:max-w-[10%] nth-2:w-[25%] nth-2:min-w-[25%] nth-2:max-w-[25%] nth-3:w-[20%] nth-3:min-w-[20%] nth-3:max-w-[20%] nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%] nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%] nth-6:w-[10%] nth-6:min-w-[10%] nth-6:max-w-[10%]"
+                  className="py-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl nth-1:w-[10%] nth-1:min-w-[10%] nth-1:max-w-[10%] nth-2:w-[25%] nth-2:min-w-[25%] nth-2:max-w-[25%] nth-3:w-[20%] nth-3:min-w-[20%] nth-3:max-w-[20%] nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%] nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%] nth-6:w-[10%] nth-6:min-w-[10%] nth-6:max-w-[10%]"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>

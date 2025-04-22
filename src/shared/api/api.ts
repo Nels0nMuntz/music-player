@@ -1,6 +1,7 @@
 import { API_ENDPOINTS } from "./apiEndpoints";
 import { RequestParams } from "../model/types/requestParams";
 import { isError, objectToQueryParams } from "../lib/utils";
+import { API_BASE_URL } from "../configs";
 
 type RequestUrl = keyof typeof API_ENDPOINTS;
 type RequestOptions = Omit<RequestInit, "body"> & {
@@ -10,15 +11,13 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 };
 type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-const BASE_URL = "http://localhost:3000/api";
-
 const httpClient = (method: HTTPMethod) => {
   return async <ResponseData>(url: RequestUrl, options?: RequestOptions) => {
     try {
       const params = options?.params ? `/${options?.params}` : "";
       const query = options?.query ? `?${objectToQueryParams(options.query)}` : "";
       const isFormData = options?.body instanceof FormData;
-      const response = await fetch(`${BASE_URL}${API_ENDPOINTS[url]}${params}${query}`, {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS[url]}${params}${query}`, {
         method,
         headers: {
           ...(!isFormData && { ["Content-Type"]: "application/json" }),
