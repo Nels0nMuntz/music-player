@@ -1,4 +1,6 @@
 import { PropsWithChildren, useState } from "react";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Loader2 } from "lucide-react";
 import {
   Button,
   Dialog,
@@ -10,18 +12,27 @@ import {
 } from "@/shared/ui";
 import { UploadTrackDropzone } from "./UploadTrackDropzone";
 import { useUploadAudioFileMutation } from "../api/useUploadAudioFileMutation";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Loader2 } from "lucide-react";
+import { Track } from "@/entities/track";
 
 interface Props extends PropsWithChildren {
   trackId: string;
   open: boolean;
   onOpenChange: (value: boolean) => void;
+  onSuccess: (track: Track) => void;
 }
 
-export const UploadTrackDialog: React.FC<Props> = ({ trackId, open, children, onOpenChange }) => {
+export const UploadTrackDialog: React.FC<Props> = ({
+  trackId,
+  open,
+  children,
+  onOpenChange,
+  onSuccess,
+}) => {
   const [file, setFile] = useState<File | null>(null);
-  const onUploaded = () => onOpenChange(false);
+  const onUploaded = (track: Track) => {
+    onOpenChange(false);
+    onSuccess(track);
+  };
   const { mutate, isPending } = useUploadAudioFileMutation({ onSuccess: onUploaded });
   const handleUpload = () => {
     if (!file) return;

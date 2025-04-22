@@ -4,16 +4,20 @@ import { Button } from "@/shared/ui";
 import { Track } from "@/entities/track";
 import { UploadTrackDialog } from "./UploadTrackDialog";
 import { cn } from "@/shared/lib";
+import { usePlayerActions } from "@/shared/model";
 
 interface Props {
   track: Track;
 }
 
 export const UploadTrackButton: React.FC<Props> = ({ track }) => {
+  const { tooglePlaying } = usePlayerActions();
   const [open, setOpen] = useState(false);
-
+  const onUploaded = (track: Track) => {
+    tooglePlaying(track);
+  };
   return (
-    <UploadTrackDialog trackId={track.id} open={open} onOpenChange={setOpen}>
+    <UploadTrackDialog trackId={track.id} open={open} onOpenChange={setOpen} onSuccess={onUploaded}>
       <Button
         size="icon"
         variant="outline"

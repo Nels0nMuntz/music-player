@@ -1,20 +1,20 @@
-import { uploadAudioFile } from "@/entities/track";
+import { useMutation } from "@tanstack/react-query";
+import { Track, uploadAudioFile } from "@/entities/track";
 import { QUERY_KEYS } from "@/shared/api";
 import { queryClient } from "@/shared/configs";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface Options {
-  onSuccess: () => void;
+  onSuccess: (track: Track) => void;
 }
 
 export const useUploadAudioFileMutation = ({ onSuccess }: Options) => {
   return useMutation({
     mutationFn: uploadAudioFile,
-    onSuccess: () => {
+    onSuccess: (response) => {
       toast.success("The file has been uploaded");
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.tracks] });
-      onSuccess();
+      if (response) onSuccess(response);
     },
     onError: (error) => {
       toast.success(error.message || "Failed to upload the file");
