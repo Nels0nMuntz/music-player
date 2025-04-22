@@ -105,7 +105,7 @@ export const TrackList = () => {
         enableSorting: false,
         cell: (info) => {
           if (!info.row.original.audioFile) {
-            return <UploadTrackButton trackId={info.row.original.id} />;
+            return <UploadTrackButton track={info.row.original} />;
           }
           return (
             <div className="flex gap-x-1.5">

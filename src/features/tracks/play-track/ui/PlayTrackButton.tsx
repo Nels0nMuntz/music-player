@@ -11,24 +11,22 @@ export const PlayTrackButton: React.FC<Props> = ({ track }) => {
   const currentTrack = useTrack();
   const isPlaying = useIsPlaying();
   const { tooglePlaying } = usePlayerActions();
+
+  const isCurrent = currentTrack?.id === track.id;
+
   return (
     <Button
       size="icon"
       variant="outline"
-      className="cursor-pointer"
+      className="cursor-pointer relative bg-cover bg-center overflow-hidden"
+      style={{ backgroundImage: `url(${track.coverImage})` }}
       onClick={() => tooglePlaying(track)}
     >
-      {currentTrack?.id === track.id ? (
-        <>
-          <span className="sr-only">{isPlaying ? "Pause" : "Play"}</span>
-          {isPlaying ? <CirclePause /> : <CirclePlay />}
-        </>
-      ) : (
-        <>
-          <span className="sr-only">Play</span>
-          <CirclePlay />
-        </>
-      )}
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative z-10 text-white">
+        <span className="sr-only">{isCurrent ? (isPlaying ? "Pause" : "Play") : "Play"}</span>
+        {isCurrent && isPlaying ? <CirclePause /> : <CirclePlay />}
+      </div>
     </Button>
   );
 };
