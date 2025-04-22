@@ -8,14 +8,14 @@ export const SearchInput: React.FC = () => {
   const isSearching = useIsSearching();
   const { setSearchText } = useSettingsActions();
   return (
-    <div className="relative  flex items-center gap-x-1 max-w-80 w-full">
+    <div className="relative  flex items-center gap-x-1 xs:max-w-[320px] w-full">
       <Search size={20} className="absolute top-1/2 left-1 -translate-y-1/2" />
       <Label htmlFor="tracks-search" className="sr-only">
         Search by title, artist, or album"
       </Label>
       <Input
         id="tracks-search"
-        className="pl-7 pr-8 shadow-none focus-visible:right-1 focus-visible:ring-primary focus-visible:border-primary"
+        className="w-full pl-7 pr-8 border border-primary bg-white shadow-none focus-visible:right-1 focus-visible:ring-primary focus-visible:border-primary"
         placeholder="Search by title, artist, or album"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}

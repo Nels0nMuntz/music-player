@@ -46,6 +46,8 @@
   --font-montserrat: "Montserrat", "sans-serif";
 
   --container: 1400px;
+
+  --breakpoint-xs: 480px;
 }
 
 :root {

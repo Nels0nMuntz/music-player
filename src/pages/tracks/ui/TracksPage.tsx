@@ -1,4 +1,4 @@
-import { SearchInput, AddTrackButton } from "@/features/tracks";
+import { SearchInput, AddTrackButton, DeleteMultipleTraksButton } from "@/features/tracks";
 import { Section } from "./components/Section";
 import { TrackList } from "./components/TrackList";
 import { Player } from "./components/Player/Player";
@@ -12,8 +12,11 @@ export const TracksPage = () => {
           <Player />
         </Section>
         <Section title="Your Tracks">
-          <div className="w-full flex items-start justify-between gap-x-2">
-            <SearchInput />
+          <div className="w-full flex flex-col-reverse xs:flex-row items-start justify-between gap-x-2 gap-y-3 mb-4">
+            <div className="w-full flex items-center flex-wrap gap-x-4 gap-y-3">
+              <SearchInput />
+              <DeleteMultipleTraksButton />
+            </div>
             <AddTrackButton />
           </div>
           <TrackList />

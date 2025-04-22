@@ -41,22 +41,22 @@ const httpClient = (method: HTTPMethod) => {
 };
 
 const get = httpClient("GET");
-const post = (url: RequestUrl, options?: RequestOptions) => {
+const post = <ResponseData>(url: RequestUrl, options?: RequestOptions) => {
   const isFormData = options?.body instanceof FormData;
   const body = isFormData ? options?.body : JSON.stringify(options?.body || {});
-  return httpClient("POST")(url, {
+  return httpClient("POST")<ResponseData>(url, {
     ...options,
     body,
   });
 };
-const put = (url: RequestUrl, options?: RequestOptions) => {
-  return httpClient("PUT")(url, {
+const put = <ResponseData>(url: RequestUrl, options?: RequestOptions) => {
+  return httpClient("PUT")<ResponseData>(url, {
     ...options,
     body: JSON.stringify(options?.body || {}),
   });
 };
-const remove = (url: RequestUrl, options?: RequestOptions) => {
-  return httpClient("DELETE")(url, {
+const remove = <ResponseData>(url: RequestUrl, options?: RequestOptions) => {
+  return httpClient("DELETE")<ResponseData>(url, {
     ...options,
     body: JSON.stringify(options?.body || {}),
   });

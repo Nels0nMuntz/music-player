@@ -7,6 +7,7 @@ export {
   useSearchText,
   useSettingsActions,
   useSorting,
+  useSelections
 } from "./stores/settingsStore";
 
 export {

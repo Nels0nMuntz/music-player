@@ -1,30 +1,34 @@
 import { useMutation } from "@tanstack/react-query";
-import { deleteTrack, Track } from "@/entities/track";
-import { queryClient } from "@/shared/configs";
-import { QUERY_KEYS } from "@/shared/api";
 import { toast } from "sonner";
+import { deleteTracks, Track } from "@/entities/track";
+import { QUERY_KEYS } from "@/shared/api";
+import { queryClient } from "@/shared/configs";
 
 interface Options {
   onSuccess: () => void;
 }
 
-export const useDeleteTrackMutation = ({ onSuccess}: Options) => {
+export const useDeleteMultipleTracksMutation = ({ onSuccess }: Options) => {
   return useMutation({
-    mutationFn: deleteTrack,
-    onMutate: async (id) => {
+    mutationFn: deleteTracks,
+    onMutate: async (ids) => {
       await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.tracks] });
       const prevRecords = queryClient.getQueryData([QUERY_KEYS.tracks]);
       queryClient.setQueryData<Track[]>([QUERY_KEYS.tracks], (oldRecords) => [
-        ...(oldRecords || []).filter((track) => track.id !== id),
+        ...(oldRecords || []).filter((track) => !ids.includes(track.id)),
       ]);
       return { prevRecords };
     },
-    onSuccess: () => {
-      toast.success("The track has been deleted");
-      onSuccess();
+    onSuccess: (response) => {
+        if(response?.failed.length) {
+            toast.warning("Not all tracks have been deleted");
+        } else {
+            toast.success("Tracks have been deleted");
+        }
+        onSuccess();
     },
     onError: (error, _, context?: { prevRecords: unknown }) => {
-      toast.error(error.message || "Failed to delete the track");
+      toast.error(error.message || "Failed to delete the tracks");
       queryClient.setQueryData([QUERY_KEYS.tracks], context?.prevRecords);
     },
     onSettled: () => {

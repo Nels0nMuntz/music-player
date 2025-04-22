@@ -9,19 +9,35 @@ import {
   getPaginationRowModel,
   SortingState,
   PaginationState,
+  RowSelectionState,
 } from "@tanstack/react-table";
 import { EllipsisVertical } from "lucide-react";
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
-import { formatDate, useDebounce } from "@/shared/lib";
+import {
+  Button,
+  IndeterminateCheckbox,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui";
+import { cn, formatDate, useDebounce } from "@/shared/lib";
 import { Track } from "@/entities/track";
 import { useGenresQuery } from "@/entities/genres";
-import { DeleteFileButton, PlayTrackButton, TasksFilter, UploadTrackButton } from "@/features/tracks";
+import {
+  DeleteFileButton,
+  PlayTrackButton,
+  TasksFilter,
+  UploadTrackButton,
+} from "@/features/tracks";
 import {
   useSorting,
   useFilters,
   usePagination,
   useSearchText,
   useSettingsActions,
+  useSelections,
 } from "@/shared/model";
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
@@ -36,8 +52,10 @@ export const TrackList = () => {
   const filters = useFilters();
   const pagination = usePagination();
   const searchText = useSearchText();
+  const rowSelection = useSelections();
   const debouncedSearchText = useDebounce(searchText, 500);
-  const { setSorting, setFilters, setPagination, setIsSearching } = useSettingsActions();
+  const { setSorting, setFilters, setPagination, setIsSearching, setSelections } =
+    useSettingsActions();
   const { genresData = [], genresError, isLoadingGenres } = useGenresQuery();
   const { tracksData, tracksError, isLoadingTracks } = useTracksQuery({
     pagination,
@@ -57,6 +75,30 @@ export const TrackList = () => {
 
   const columns = useMemo<ColumnDef<Track>[]>(
     () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <IndeterminateCheckbox
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <div className="flex items-center justify-center">
+            <IndeterminateCheckbox
+              {...{
+                checked: row.getIsSelected(),
+                disabled: !row.getCanSelect(),
+                indeterminate: row.getIsSomeSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </div>
+        ),
+      },
       {
         header: "",
         accessorKey: "play",
@@ -133,6 +175,15 @@ export const TrackList = () => {
     [pagination, setPagination],
   );
 
+  const handleRowSelectionChange = useCallback<OnChangeFn<RowSelectionState>>(
+    (updaterOrValue) => {
+      setSelections(
+        typeof updaterOrValue === "function" ? updaterOrValue(rowSelection) : updaterOrValue,
+      );
+    },
+    [rowSelection, setSelections],
+  );
+
   const table = useReactTable({
     data: tracksData?.data || [],
     columns,
@@ -144,6 +195,11 @@ export const TrackList = () => {
     manualSorting: true,
     sortDescFirst: true,
 
+    // Row selection configuration
+    onRowSelectionChange: handleRowSelectionChange,
+    enableRowSelection: true,
+    getRowId: (row) => row.id,
+
     // Pagination configuration
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: handlePaginationChange,
@@ -153,6 +209,7 @@ export const TrackList = () => {
     state: {
       sorting,
       pagination,
+      rowSelection,
     },
   });
 
@@ -199,15 +256,30 @@ export const TrackList = () => {
               key={header.id}
               className="bg-white hover:bg-white shadow-table rounded-xl overflow-hidden"
             >
-              {header.headers.map((header) => {
+              {header.headers.map((header, index) => {
                 const key = header.id;
                 return (
                   <TableHead
                     key={key}
-                    className="py-2 border-y-2 border-primary first-of-type:border-l-2 last-of-type:border-r-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl nth-1:w-[10%] nth-1:min-w-[10%] nth-1:max-w-[10%] nth-2:w-[25%] nth-2:min-w-[25%] nth-2:max-w-[25%] nth-3:w-[20%] nth-3:min-w-[20%] nth-3:max-w-[20%] nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%] nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%] nth-6:w-[10%] nth-6:min-w-[10%] nth-6:max-w-[10%]"
+                    className={cn([
+                      "py-2 border-y-2 border-primary first-of-type:border-l-2 last-of-type:border-r-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl",
+                      "nth-1:w-[5%] nth-1:min-w-[5%] nth-1:max-w-[5%]",
+                      "nth-2:w-[5%] nth-2:min-w-[5%] nth-2:max-w-[5%]",
+                      "nth-3:w-[25%] nth-3:min-w-[25%] nth-3:max-w-[25%]",
+                      "nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%]",
+                      "nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%]",
+                      "nth-6:w-[15%] nth-6:min-w-[15%] nth-6:max-w-[15%]",
+                      "nth-7:w-[10%] nth-7:min-w-[10%] nth-7:max-w-[10%]",
+                      "nth-8:w-[5%] nth-8:min-w-[5%] nth-8:max-w-[5%]",
+                    ])}
                   >
                     {header.isPlaceholder ? null : (
-                      <div className="flex items-center gap-x-0.5 select-none">
+                      <div
+                        className={cn(
+                          "flex items-center gap-x-0.5 select-none",
+                          index === 0 && "justify-center",
+                        )}
+                      >
                         {filteringColumns.includes(key) && (
                           <TasksFilter
                             filter={filters[key as keyof typeof filters]}
@@ -258,7 +330,17 @@ export const TrackList = () => {
               {row.getVisibleCells().map((cell) => (
                 <TableCell
                   key={cell.id}
-                  className="py-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl nth-1:w-[10%] nth-1:min-w-[10%] nth-1:max-w-[10%] nth-2:w-[25%] nth-2:min-w-[25%] nth-2:max-w-[25%] nth-3:w-[20%] nth-3:min-w-[20%] nth-3:max-w-[20%] nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%] nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%] nth-6:w-[10%] nth-6:min-w-[10%] nth-6:max-w-[10%]"
+                  className={cn([
+                    "py-2 first-of-type:rounded-tl-xl first-of-type:rounded-bl-xl last-of-type:rounded-tr-xl last-of-type:rounded-br-xl",
+                    "nth-1:w-[5%] nth-1:min-w-[5%] nth-1:max-w-[5%]",
+                    "nth-2:w-[5%] nth-2:min-w-[5%] nth-2:max-w-[5%]",
+                    "nth-3:w-[25%] nth-3:min-w-[25%] nth-3:max-w-[25%]",
+                    "nth-4:w-[20%] nth-4:min-w-[20%] nth-4:max-w-[20%]",
+                    "nth-5:w-[15%] nth-5:min-w-[15%] nth-5:max-w-[15%]",
+                    "nth-6:w-[15%] nth-6:min-w-[15%] nth-6:max-w-[15%]",
+                    "nth-7:w-[10%] nth-7:min-w-[10%] nth-7:max-w-[10%]",
+                    "nth-8:w-[5%] nth-8:min-w-[5%] nth-8:max-w-[5%]",
+                  ])}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
