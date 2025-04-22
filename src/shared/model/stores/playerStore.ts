@@ -32,7 +32,7 @@ const playerStore = create<PlayerStore>()((set) => ({
     setCanStartPlaying: (value) => set({ canStartPlaying: value }),
     tooglePlaying: (track) => {
       set((state) => {
-        if (track === state.track) {
+        if (track.id === state.track?.id) {
           return { isPlaying: !state.isPlaying };
         }
         return {
