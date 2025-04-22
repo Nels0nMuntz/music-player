@@ -163,7 +163,7 @@ export const usePlayerData = () => {
 
   // sync hasNextPage
   useEffect(
-    () => setHasNext(tracksData ? tracksData.meta.page < tracksData.meta.totalPages : false),
+    () => setHasNext(tracksData?.meta ? (tracksData.meta?.page || 1) < tracksData.meta?.totalPages : false),
     [tracksData],
   );
 

@@ -203,8 +203,8 @@ export const TrackList = () => {
     // Pagination configuration
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: handlePaginationChange,
-    rowCount: tracksData?.meta.total,
-    pageCount: Math.ceil((tracksData?.meta.total || 0) / (tracksData?.meta.limit || 10)),
+    rowCount: tracksData?.meta?.total || 0,
+    pageCount: Math.ceil((tracksData?.meta?.total || 0) / (tracksData?.meta?.limit || 10)),
     manualPagination: true,
     state: {
       sorting,
