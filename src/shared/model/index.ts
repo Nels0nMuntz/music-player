@@ -11,23 +11,6 @@ export {
 } from "./stores/settingsStore";
 
 export {
-  useCanStartPlaying,
-  useCurrentTime,
-  useDirection,
-  useDuration,
-  useHasNext,
-  useHasPrevious,
-  useIsInitialized,
-  useIsListUpdated,
-  useIsPlaying,
-  useIsWaitingForNewList,
-  useList,
-  usePlayerActions,
-  useTrack,
-  useTrackIndex,
-} from "./stores/playerStore";
-
-export {
   usePlaylistActions,
   usePlaylistCurrentTrackIndex,
   usePlaylistIsPlaying,
