@@ -309,24 +309,23 @@ export const TrackList = () => {
                             }}
                           />
                         )}
-                        <div
+                        <button
                           onClick={() => sortToggler(header)}
                           className="flex items-center gap-x-2 hover:cursor-pointer group/sort"
+                          data-testid="sort-select"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getIsSorted() === "asc" ||
-                            (header.column.getIsSorted() === "desc" && (
-                              <span className="text-xs">
-                                {header.column.getIsSorted() === "asc" && " ↑"}
-                                {header.column.getIsSorted() === "desc" && " ↓"}
-                              </span>
-                            ))}
+                          {header.column.getIsSorted() 
+                            ? header.column.getIsSorted() === "asc"
+                            ? " ↓"
+                            : " ↑"
+                            : null}
                           {header.column.getCanSort() && !header.column.getIsSorted() && (
                             <span className="text-xs text-muted-foreground opacity-0 group-hover/sort:opacity-100 transition-opacity">
                               ↑↓
                             </span>
                           )}
-                        </div>
+                        </button>
                       </div>
                     )}
                   </TableHead>
