@@ -6,9 +6,11 @@ interface Props {
   control: Control<any>;
   name: string;
   label: string;
+  inputTestId?: string;
+  errorTextTestId?: string;
 }
 
-export const TextField: React.FC<Props> = ({ control, name, label }) => {
+export const TextField: React.FC<Props> = ({ control, name, label, inputTestId, errorTextTestId }) => {
   return (
     <FormField
       control={control}
@@ -17,9 +19,9 @@ export const TextField: React.FC<Props> = ({ control, name, label }) => {
         <FormItem className="w-full">
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input className="border-primary focus-visible:ring-primary" {...field} />
+            <Input className="border-primary focus-visible:ring-primary" data-testid={inputTestId} {...field} />
           </FormControl>
-          <FormMessage />
+          <FormMessage data-testid={errorTextTestId}/>
         </FormItem>
       )}
     />

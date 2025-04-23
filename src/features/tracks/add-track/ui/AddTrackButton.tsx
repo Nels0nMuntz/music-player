@@ -12,7 +12,7 @@ export const AddTrackButton = () => {
       open={open}
       onOpenChange={setOpen}
       trigger={
-        <Button className="flex items-center gap-x-2 cursor-pointer xs:w-auto w-full">
+        <Button className="flex items-center gap-x-2 cursor-pointer xs:w-auto w-full" data-testid="create-track-button">
           <CirclePlus />
           <span>Add a track</span>
         </Button>

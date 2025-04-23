@@ -33,7 +33,7 @@ export const CoverLoader: React.FC<Props> = ({ url, control, label, name, onErro
           }}
         />
       )}
-      <TextField control={control} name={name} label={label} />
+      <TextField control={control} name={name} label={label} inputTestId="input-cover-image" errorTextTestId="error-coverImage"/>
       {imageLoaded && debouncedImageUrl ? (
         <img
           src={debouncedImageUrl}

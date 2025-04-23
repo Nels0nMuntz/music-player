@@ -32,7 +32,7 @@ export const DeleteTrackDialog: React.FC<Props> = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent data-testid="confirm-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -41,11 +41,11 @@ export const DeleteTrackDialog: React.FC<Props> = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
-            <Button variant="outline" className="bg-white min-w-24">
+            <Button variant="outline" className="bg-white min-w-24" data-testid="cancel-delete">
               Cancel
             </Button>
           </AlertDialogCancel>
-          <Button variant="destructive" onClick={handleDelete} className="min-w-24">
+          <Button variant="destructive" onClick={handleDelete} className="min-w-24" data-testid="confirm-delete">
             {isPending ? <Loader2 className="animate-spin" /> : "Delete"}
           </Button>
         </AlertDialogFooter>

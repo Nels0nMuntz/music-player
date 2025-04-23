@@ -19,6 +19,7 @@ export const SearchInput: React.FC = () => {
         placeholder="Search by title, artist, or album"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
+        data-testid="search-input"
       />
       {isSearching && (
         <Spinner size="small" className="absolute top-1/2 right-2 -translate-y-1/2" />

@@ -6,13 +6,14 @@ import { Button, Popover, PopoverContent, PopoverTrigger } from "@/shared/ui";
 import { ListFilter, ListFilterPlus } from "lucide-react";
 
 interface Props {
+  testId?: string;
   title: string;
   filter: string;
   options?: string[];
   onChange: (value: string) => void;
 }
 
-export const TasksFilter: React.FC<Props> = ({ title, filter, options, onChange }) => {
+export const TasksFilter: React.FC<Props> = ({ testId, title, filter, options, onChange }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -30,7 +31,7 @@ export const TasksFilter: React.FC<Props> = ({ title, filter, options, onChange 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="cursor-pointer" onClick={handleOpen}>
+        <Button variant="ghost" className="cursor-pointer" onClick={handleOpen} data-testid={testId}>
           {filter ? (
             <ListFilter size={16} className="text-foreground" />
           ) : (

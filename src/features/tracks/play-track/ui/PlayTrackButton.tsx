@@ -21,7 +21,8 @@ export const PlayTrackButton: React.FC<Props> = ({ track }) => {
       className="cursor-pointer relative bg-cover bg-center overflow-hidden"
       style={{ backgroundImage: `url(${track.coverImage})` }}
       onClick={() => tooglePlaying(track)}
-    >
+      data-testid={`play-button-${track.id}`}    
+      >
       <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10 text-white">
         <span className="sr-only">{isCurrent ? (isPlaying ? "Pause" : "Play") : "Play"}</span>

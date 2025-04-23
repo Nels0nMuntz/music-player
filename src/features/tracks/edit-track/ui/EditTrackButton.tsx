@@ -4,13 +4,14 @@ import { Button } from "@/shared/ui";
 import { Track } from "@/entities/track";
 import { EditTrackDialog } from "./EditTrackDialog";
 import { EditTrackForm } from "./EditTrackForm";
+import { forwardRef } from "react";
 
 interface Props {
   track: Track;
   onCloseDialog: () => void;
 }
 
-export const EditTrackButton: React.FC<Props> = ({ track, onCloseDialog }) => {
+export const EditTrackButton = forwardRef<HTMLButtonElement, Props>(({ track, onCloseDialog }, ref) => {
   const [open, setOpen] = useState(false);
   const handleSubmitted = () => {
     setOpen(false);
@@ -26,7 +27,12 @@ export const EditTrackButton: React.FC<Props> = ({ track, onCloseDialog }) => {
       onOpenChange={handleOpenChange}
       title={track.title}
       trigger={
-        <Button variant="ghost" className="w-full flex items-center gap-x-4">
+        <Button
+          ref={ref}
+          variant="ghost"
+          className="w-full flex items-center gap-x-4"
+          data-testid={`edit-track-${track.id}`}
+        >
           <Pencil className="shrink-0" />
           <span className="grow text-left">Edit</span>
         </Button>
@@ -35,4 +41,4 @@ export const EditTrackButton: React.FC<Props> = ({ track, onCloseDialog }) => {
       <EditTrackForm track={track} onUpdated={handleSubmitted} />
     </EditTrackDialog>
   );
-};
+});

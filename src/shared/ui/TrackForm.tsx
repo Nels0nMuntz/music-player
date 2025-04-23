@@ -8,15 +8,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { TextField } from "./TextField";
 import { MultipleSelector } from "./MultipleSelector";
 import { CoverLoader } from "./CoverLoader";
+import { DialogClose, DialogFooter } from "./tailwind/dialog";
+import { Button } from "./tailwind/button";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   values?: TrackFormValues;
   genres: Genre[];
-  actions: React.ReactNode;
+  isSubmitting: boolean;
   onSubmit: (values: Omit<TrackFormValues, "genres"> & { genres: string[] }) => void;
 }
 
-export const TrackForm: React.FC<Props> = ({ values, actions, genres, onSubmit }) => {
+export const TrackForm: React.FC<Props> = ({ values, genres, isSubmitting, onSubmit }) => {
   const [coverLoadingError, setCoverLoadingError] = useState("");
   const form = useForm<TrackFormValues>({
     resolver: zodResolver(trackFormSchema),
@@ -47,19 +50,31 @@ export const TrackForm: React.FC<Props> = ({ values, actions, genres, onSubmit }
     (errors) => console.log({ errors }),
   );
   const handleCoverLoaderError = (error: string) => {
-    if(error) {
+    if (error) {
       setCoverLoadingError(error);
       form.setError("coverImage", { message: error, type: "custom" });
     } else {
       setCoverLoadingError("");
-      form.trigger("coverImage")
+      form.trigger("coverImage");
     }
   };
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <TextField control={form.control} name="title" label="Title *" />
-        <TextField control={form.control} name="artist" label="Artist *" />
+      <form onSubmit={handleSubmit} className="space-y-4" data-testid="track-form">
+        <TextField
+          control={form.control}
+          name="title"
+          label="Title *"
+          inputTestId="input-title"
+          errorTextTestId="error-title"
+        />
+        <TextField
+          control={form.control}
+          name="artist"
+          label="Artist *"
+          inputTestId="input-artist"
+          errorTextTestId="error-artist"
+        />
         <FormField
           control={form.control}
           name="genres"
@@ -76,13 +91,14 @@ export const TrackForm: React.FC<Props> = ({ values, actions, genres, onSubmit }
                       No options
                     </p>
                   }
+                  testId="genre-selector"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage data-testid="error-genre"/>
             </FormItem>
           )}
         />
-        <TextField control={form.control} name="album" label="Album" />
+        <TextField control={form.control} name="album" label="Album" inputTestId="input-album" errorTextTestId="error-album"/>
         <CoverLoader
           url={imageUrl || ""}
           control={form.control}
@@ -90,7 +106,22 @@ export const TrackForm: React.FC<Props> = ({ values, actions, genres, onSubmit }
           label="Cover image"
           onError={handleCoverLoaderError}
         />
-        {actions}
+        <DialogFooter className="sm:justify-end">
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" className="min-w-24">
+              Close
+            </Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            variant="default"
+            disabled={isSubmitting}
+            className="min-w-24"
+            data-testid="submit-button"
+          >
+            {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit"}
+          </Button>
+        </DialogFooter>
       </form>
     </Form>
   );

@@ -11,10 +11,10 @@ import {
   DialogTitle,
 } from "@/shared/ui/tailwind/dialog"
 
-function Command({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+const Command = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive>,
+  React.ComponentProps<typeof CommandPrimitive>
+>(({ className, ...props }, ref) => {
   return (
     <CommandPrimitive
       data-slot="command"
@@ -22,10 +22,11 @@ function Command({
         "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
         className
       )}
+      ref={ref}
       {...props}
     />
   )
-}
+})
 
 function CommandDialog({
   title = "Command Palette",

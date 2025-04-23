@@ -42,6 +42,7 @@ import {
 import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
 import { ActionsMenu } from "./ActionsMenu";
+import TableSkeleton from "./TrackListSkeleton";
 
 type OnChangeFn<T> = (updaterOrValue: T | ((old: T) => T)) => void;
 
@@ -108,7 +109,7 @@ export const TrackList = () => {
             return <UploadTrackButton track={info.row.original} />;
           }
           return (
-            <div className="flex gap-x-1.5">
+            <div className="flex gap-x-1.5" data-testid={`audio-player-${info.row.original.id}`}>
               <PlayTrackButton track={info.row.original} />
               <DeleteFileButton trackId={info.row.original.id} />
             </div>
@@ -119,11 +120,21 @@ export const TrackList = () => {
         header: "Title",
         accessorKey: "title",
         enableSorting: true,
+        cell: (info) => (
+          <span data-testid={`track-item-${info.row.original.id}-title`}>
+            {info.row.original.title}
+          </span>
+        ),
       },
       {
         header: "Artist",
         accessorKey: "artist",
         enableSorting: true,
+        cell: (info) => (
+          <span data-testid={`track-item-${info.row.original.id}-artist`}>
+            {info.row.original.artist}
+          </span>
+        ),
       },
       {
         header: "Album",
@@ -245,10 +256,10 @@ export const TrackList = () => {
 
   const isLoading = isLoadingTracks || isLoadingGenres;
 
-  if (isLoading) return <div>Loading</div>;
+  if (isLoading) return <TableSkeleton />;
 
   return (
-    <div className="flex flex-col gap-y-4 -ml-4 -mr-4">
+    <div className="flex flex-col gap-y-4 -ml-4 -mr-4" aria-disabled={isLoading ? "true" : "false"}>
       <Table className="border-separate border-spacing-x-0 border-spacing-y-3 px-4 pb-2">
         <TableHeader>
           {table.getHeaderGroups().map((header) => (
@@ -282,6 +293,7 @@ export const TrackList = () => {
                       >
                         {filteringColumns.includes(key) && (
                           <TasksFilter
+                            testId={key === "genres" ? "filter-genre" : "filter-artist"}
                             filter={filters[key as keyof typeof filters]}
                             title={`Filter by ${key}`}
                             options={key === "genres" ? genresData : []}
@@ -326,6 +338,7 @@ export const TrackList = () => {
             <TableRow
               key={row.id}
               className="bg-white hover:bg-white shadow-table rounded-xl overflow-hidden"
+              data-testid={`track-item-${row.id}`}
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell

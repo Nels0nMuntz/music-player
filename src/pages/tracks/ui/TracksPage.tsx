@@ -7,7 +7,7 @@ export const TracksPage = () => {
   return (
     <main>
       <div className="main-container flex flex-col gap-y-10 mx-auto px-4 py-5">
-        <h1 className="sr-only">Music Player</h1>
+        <h1 className="sr-only" data-testid="tracks-header">Music Player</h1>
         <Section title="Now Playing">
           <Player />
         </Section>

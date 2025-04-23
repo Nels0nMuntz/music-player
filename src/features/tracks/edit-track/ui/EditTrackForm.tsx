@@ -26,6 +26,7 @@ export const EditTrackForm: React.FC<Props> = ({ track, onUpdated }) => {
     <TrackForm
       onSubmit={handleSubmit}
       genres={genresData}
+      isSubmitting={isPending}
       values={{
         title: track.title,
         artist: track.artist,
@@ -33,18 +34,6 @@ export const EditTrackForm: React.FC<Props> = ({ track, onUpdated }) => {
         genres: track.genres.map((item) => ({ label: item, value: item })),
         coverImage: track.coverImage,
       }}
-      actions={
-        <DialogFooter className="sm:justify-end">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary" className="min-w-24">
-              Close
-            </Button>
-          </DialogClose>
-          <Button type="submit" variant="default" disabled={isPending} className="min-w-24">
-            {isPending ? <Loader2 className="animate-spin" /> : "Update"}
-          </Button>
-        </DialogFooter>
-      }
     />
   );
 };

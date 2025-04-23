@@ -125,6 +125,7 @@ export const Player = () => {
     <section
       key={track?.id}
       className="w-full max-w-2xl mx-auto flex flex-col items-center p-6 rounded-4xl shadow-player border-2 border-primary"
+      aria-disabled={isInitialized ? "false" : "true"}
     >
       <div className="my-4">
         {track?.coverImage ? (

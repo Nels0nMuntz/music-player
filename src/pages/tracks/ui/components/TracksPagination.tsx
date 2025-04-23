@@ -17,10 +17,10 @@ interface Props {
 export const TracksPagination: React.FC<Props> = ({ table }) => {
   if (!table.getRowCount() || table.getPageCount() === 1) return null;
   return (
-    <Pagination className="w-min mx-0 ml-auto px-4">
+    <Pagination className="w-min mx-0 ml-auto px-4" data-testid="pagination">
       <PaginationContent>
         <PaginationItem className="bg-violet-300 rounded-md hover:cursor-pointer">
-          <PaginationPrevious onClick={() => table.previousPage()} />
+          <PaginationPrevious onClick={() => table.previousPage()} data-testid="pagination-prev"/>
         </PaginationItem>
         {table.getState().pagination.pageIndex + 1 >= 4 && (
           <PaginationItem className="bg-violet-300 rounded-md hover:cursor-pointer">
@@ -91,7 +91,7 @@ export const TracksPagination: React.FC<Props> = ({ table }) => {
           </>
         )}
         <PaginationItem className="bg-violet-300 rounded-md hover:cursor-pointer">
-          <PaginationNext onClick={() => table.nextPage()} />
+          <PaginationNext onClick={() => table.nextPage()} data-testid="pagination-next"/>
         </PaginationItem>
       </PaginationContent>
     </Pagination>

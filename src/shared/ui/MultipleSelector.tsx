@@ -21,6 +21,7 @@ interface GroupOption {
 }
 
 interface MultipleSelectorProps {
+  testId?: string;
   value?: Option[];
   defaultOptions?: Option[];
   /** manually controlled options */
@@ -167,6 +168,7 @@ CommandEmpty.displayName = "CommandEmpty";
 export const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
   (
     {
+      testId,
       value,
       onChange,
       placeholder,
@@ -516,6 +518,7 @@ export const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSe
                 },
                 inputProps?.className,
               )}
+              data-testid={testId}
             />
             <button
               type="button"

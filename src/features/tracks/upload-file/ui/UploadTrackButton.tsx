@@ -23,6 +23,7 @@ export const UploadTrackButton: React.FC<Props> = ({ track }) => {
         variant="outline"
         className="cursor-pointer relative bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: `url(${track.coverImage})` }}
+        data-testid={`upload-track-${track.id}`}
       >
         {track.coverImage && <div className="absolute inset-0 bg-black/30 z-0" />}
         <span className="sr-only">Upload an audio file</span>
