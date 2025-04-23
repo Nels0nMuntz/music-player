@@ -12,7 +12,6 @@ export const useDeleteFileMutation = ({ onSuccess }: Options) => {
   return useMutation({
     mutationFn: deleteFile,
     onMutate: async (id) => {
-        console.log("deleteFile", id);
       await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.tracks] });
       const prevRecords = queryClient.getQueryData([QUERY_KEYS.tracks]);
       queryClient.setQueryData<Track[]>([QUERY_KEYS.tracks], (oldRecords) => [

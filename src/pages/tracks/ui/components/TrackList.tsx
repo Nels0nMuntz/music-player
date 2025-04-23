@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   Header,
   flexRender,
@@ -35,6 +35,7 @@ import {
   usePagination,
   useSettingsActions,
   useSelections,
+  usePlaylistActions,
 } from "@/shared/model";
 import { TracksPagination } from "./TracksPagination";
 import { ActionsMenu } from "./ActionsMenu";
@@ -50,10 +51,17 @@ export const TrackList = () => {
   const filters = useFilters();
   const pagination = usePagination();
   const rowSelection = useSelections();
-  const {genresData, tracksData, isLoading} = useTracksData()
-  const { setSorting, setFilters, setPagination, setSelections } =
-    useSettingsActions();
-  
+  const { genresData, tracksData, isLoading } = useTracksData();
+  const { setSorting, setFilters, setPagination, setSelections } = useSettingsActions();
+  const { setTracks, setCurrentTrackIndex, setIsInitialized } = usePlaylistActions();
+
+  useEffect(() => {
+    if (tracksData?.data) {
+      setTracks(tracksData.data);
+      setCurrentTrackIndex(-1);
+      setIsInitialized(true);
+    }
+  }, [tracksData]);
 
   const columns = useMemo<ColumnDef<Track>[]>(
     () => [
@@ -65,7 +73,7 @@ export const TrackList = () => {
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
-              testId: "select-all"
+              testId: "select-all",
             }}
           />
         ),
@@ -88,9 +96,11 @@ export const TrackList = () => {
         accessorKey: "play",
         enableSorting: false,
         cell: (info) => {
+          // console.log({original: info.row.original});
           if (!info.row.original.audioFile) {
             return <UploadTrackButton track={info.row.original} />;
           }
+          
           return (
             <div className="flex gap-x-1.5" data-testid={`audio-player-${info.row.original.id}`}>
               <PlayTrackButton track={info.row.original} />
@@ -200,6 +210,7 @@ export const TrackList = () => {
     rowCount: tracksData?.meta?.total || 0,
     pageCount: Math.ceil((tracksData?.meta?.total || 0) / (tracksData?.meta?.limit || 10)),
     manualPagination: true,
+
     state: {
       sorting,
       pagination,
@@ -270,10 +281,10 @@ export const TrackList = () => {
                           data-testid="sort-select"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getIsSorted() 
+                          {header.column.getIsSorted()
                             ? header.column.getIsSorted() === "asc"
-                            ? " ↓"
-                            : " ↑"
+                              ? " ↓"
+                              : " ↑"
                             : null}
                           {header.column.getCanSort() && !header.column.getIsSorted() && (
                             <span className="text-xs text-muted-foreground opacity-0 group-hover/sort:opacity-100 transition-opacity">

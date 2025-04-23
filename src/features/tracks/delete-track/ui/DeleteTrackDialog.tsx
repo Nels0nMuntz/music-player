@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "react";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -11,7 +12,11 @@ import {
   Button,
 } from "@/shared/ui";
 import { useDeleteTrackMutation } from "../api/useDeleteTrackMutation";
-import { Loader2 } from "lucide-react";
+import {
+  usePlaylistCurrentTrackIndex,
+  usePlaylistTracks,
+  usePlaylistActions,
+} from "@/shared/model";
 
 interface Props extends PropsWithChildren {
   trackId: string;
@@ -27,8 +32,26 @@ export const DeleteTrackDialog: React.FC<Props> = ({
   onOpenChange,
   onDeleted,
 }) => {
+  const tracks = usePlaylistTracks();
+  const trackIndex = usePlaylistCurrentTrackIndex();
+  const { pushTrackToQueue } = usePlaylistActions();
   const { mutate, isPending } = useDeleteTrackMutation({ onSuccess: onDeleted });
-  const handleDelete = () => mutate(trackId);
+  const handleDelete = () => {
+    const currentTrack = tracks[trackIndex];
+    if (!currentTrack) {
+      mutate(trackId);
+      return;
+    }
+    if (currentTrack.id === trackId) {
+      const nextTrack = tracks[trackIndex + 1];
+      if (nextTrack) {
+        pushTrackToQueue(nextTrack);
+      }
+    } else {
+      pushTrackToQueue(currentTrack);
+    }
+    mutate(trackId);
+  };
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -45,7 +68,12 @@ export const DeleteTrackDialog: React.FC<Props> = ({
               Cancel
             </Button>
           </AlertDialogCancel>
-          <Button variant="destructive" onClick={handleDelete} className="min-w-24" data-testid="confirm-delete">
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            className="min-w-24"
+            data-testid="confirm-delete"
+          >
             {isPending ? <Loader2 className="animate-spin" /> : "Delete"}
           </Button>
         </AlertDialogFooter>

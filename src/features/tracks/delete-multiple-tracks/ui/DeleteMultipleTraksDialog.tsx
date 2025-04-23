@@ -13,23 +13,52 @@ import {
   Button,
 } from "@/shared/ui";
 import { useDeleteMultipleTracksMutation } from "../api/useDeleteMultipleTracksMutation";
+import {
+  usePlaylistCurrentTrackIndex,
+  usePlaylistTracks,
+  usePlaylistActions,
+  useSettingsActions
+} from "@/shared/model";
 
 interface Props extends PropsWithChildren {
   open: boolean;
   onOpenChange: (value: boolean) => void;
-  onDeleted: () => void;
 }
 
 export const DeleteMultipleTracksDialog: React.FC<Props> = ({
   open,
   children,
   onOpenChange,
-  onDeleted,
 }) => {
+  const tracks = usePlaylistTracks();
+  const trackIndex = usePlaylistCurrentTrackIndex();
+  const { pushTrackToQueue } = usePlaylistActions();
+  const { setSelections } = useSettingsActions();
   const selection = useSelections();
   const trackIds = Object.keys(selection);
+  
+  const onDeleted = () => {
+    setSelections({});
+    onOpenChange(false);
+  }
+
   const { mutate, isPending } = useDeleteMultipleTracksMutation({ onSuccess: onDeleted });
-  const handleDelete = () => mutate(trackIds);
+  const handleDelete = () => {
+    const currentTrack = tracks[trackIndex];
+    if (!currentTrack) {
+      mutate(trackIds);
+      return;
+    };
+    if (trackIds.includes(currentTrack.id)) {
+      const nextTrack = tracks.find((track) => !trackIds.includes(track.id));
+      if (nextTrack) {
+        pushTrackToQueue(nextTrack);
+      }
+    } else {
+      pushTrackToQueue(currentTrack);
+    }
+    mutate(trackIds);
+  };
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>

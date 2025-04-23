@@ -7,7 +7,7 @@ export {
   useSearchText,
   useSettingsActions,
   useSorting,
-  useSelections
+  useSelections,
 } from "./stores/settingsStore";
 
 export {
@@ -26,3 +26,14 @@ export {
   useTrack,
   useTrackIndex,
 } from "./stores/playerStore";
+
+export {
+  usePlaylistActions,
+  usePlaylistCurrentTrackIndex,
+  usePlaylistIsPlaying,
+  usePlaylistTracks,
+  usePlaylistDirection,
+  usePlaylistIsInitialized,
+  usePlaylistAudioControl,
+  usePlaylistQueue,
+} from "./stores/playlistStore";
