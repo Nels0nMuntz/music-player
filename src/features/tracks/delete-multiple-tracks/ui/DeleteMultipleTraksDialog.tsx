@@ -47,7 +47,12 @@ export const DeleteMultipleTracksDialog: React.FC<Props> = ({
               Cancel
             </Button>
           </AlertDialogCancel>
-          <Button variant="destructive" onClick={handleDelete} className="min-w-24">
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            className="min-w-24"
+            data-testid="bulk-delete-button"
+          >
             {isPending ? <Loader2 className="animate-spin" /> : "Delete"}
           </Button>
         </AlertDialogFooter>

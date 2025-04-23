@@ -21,10 +21,10 @@ import {
   useTrack,
   useIsInitialized,
 } from "@/shared/model";
-import { PlayerEmpty } from "./PlayerEmpty";
 import { PlayerSkeleton } from "./PlayerSkeleton";
 import { usePlayerData } from "../../../lib/usePlayerData";
 import { cn } from "@/shared/lib";
+import AudioProgressBar from "./AudioProgressBar";
 
 export const Player = () => {
   const track = useTrack();
@@ -37,35 +37,17 @@ export const Player = () => {
   const hasPreviousPage = useHasPrevious();
   const isInitialized = useIsInitialized();
   const canStartPlaying = useCanStartPlaying();
-  const { setDuration, setCurrentTime, setIsPlaying, setCanStartPlaying } = usePlayerActions();
+  const { setIsPlaying, setCanStartPlaying } = usePlayerActions();
   const { setNextTrack, setPrevTrack } = usePlayerData();
 
   const [isReady, setIsReady] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currrentProgress, setCurrrentProgress] = useState(0);
+  const [buffered, setBuffered] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const canPlayPrevTrack = trackIndex > 0 || hasPreviousPage;
   const canPlayNextTrack = trackIndex < list.length - 1 || hasNextPage;
-
-  // useEffect(() => {
-  //   const audio = audioRef.current;
-  //   if (!audio) return;
-
-  //   const handleLoadedMetadata = () => {
-  //     setDuration(audio.duration);
-  //   };
-
-  //   const handleTimeUpdate = () => {
-  //     setCurrentTime(audio.currentTime);
-  //   };
-
-  //   audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-  //   audio.addEventListener("timeupdate", handleTimeUpdate);
-
-  //   return () => {
-  //     audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-  //     audio.removeEventListener("timeupdate", handleTimeUpdate);
-  //   };
-  // }, [track]);
 
   useEffect(() => {
     audioRef.current?.pause();
@@ -117,6 +99,20 @@ export const Player = () => {
     }
   };
 
+  const handleBufferProgress: React.ReactEventHandler<HTMLAudioElement> = (e) => {
+    const audio = e.currentTarget;
+    const dur = audio.duration;
+    if (dur > 0) {
+      for (let i = 0; i < audio.buffered.length; i++) {
+        if (audio.buffered.start(audio.buffered.length - 1 - i) < audio.currentTime) {
+          const bufferedLength = audio.buffered.end(audio.buffered.length - 1 - i);
+          setBuffered(bufferedLength);
+          break;
+        }
+      }
+    }
+  };
+
   if (!isInitialized) {
     return <PlayerSkeleton />;
   }
@@ -144,11 +140,29 @@ export const Player = () => {
           vibing
         </h3>
       )}
-      {track && <div className="font-medium text-sm text-muted-foreground max-w-60 mx-auto">{track.genres.join(", ")}</div>}
+      {track && (
+        <div className="font-medium text-sm text-muted-foreground max-w-60 mx-auto">
+          {track.genres.join(", ")}
+        </div>
+      )}
       {/* <div className="text-sm font-mono">
         {formatTime(currentTime)} / {formatTime(duration)}
       </div> */}
-      <div className="flex items-center gap-x-2 mt-4 p-3 rounded-xl bg-background-accent border border-primary">
+      <div className="my-4 w-full max-w-60 h-3 relative">
+        <AudioProgressBar
+          duration={duration}
+          currentProgress={currrentProgress}
+          buffered={buffered}
+          onChange={(e) => {
+            if (!audioRef.current) return;
+
+            audioRef.current.currentTime = e.currentTarget.valueAsNumber;
+
+            setCurrrentProgress(e.currentTarget.valueAsNumber);
+          }}
+        />
+      </div>
+      <div className="flex items-center gap-x-2 mt-2 p-3 rounded-xl bg-background-accent border border-primary">
         <Button
           variant="link"
           onClick={playPrev}
@@ -197,12 +211,11 @@ export const Player = () => {
             setIsReady(true);
           }}
           onError={handleError}
-          // onTimeUpdate={(e) => {
-          //   setCurrrentProgress(e.currentTarget.currentTime);
-          //   handleBufferProgress(e);
-          // }}
-          // onProgress={handleBufferProgress}
-          // onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+          onTimeUpdate={(e) => {
+            setCurrrentProgress(e.currentTarget.currentTime);
+            handleBufferProgress(e);
+          }}
+          onProgress={handleBufferProgress}
         >
           <source src={`${API_BASE_URL}/files/${track.audioFile}`} />
         </audio>

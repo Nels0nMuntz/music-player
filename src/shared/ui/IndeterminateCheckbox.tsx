@@ -3,8 +3,9 @@ import { HTMLProps, useEffect, useRef } from "react";
 export const IndeterminateCheckbox = ({
   indeterminate,
   className = "",
+  testId,
   ...rest
-}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) => {
+}: { indeterminate?: boolean; testId?: string } & HTMLProps<HTMLInputElement>) => {
   const ref = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export const IndeterminateCheckbox = ({
           checked:bg-primary checked:border-transparent 
           indeterminate:bg-primary indeterminate:border-transparent 
           focus:outline-none focus:ring-2 focus:ring-primary transition`}
+        data-testid={testId}
         {...rest}
       />
       {/* Checkmark icon */}

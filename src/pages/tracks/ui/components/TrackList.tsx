@@ -84,6 +84,7 @@ export const TrackList = () => {
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
+              testId: "select-all"
             }}
           />
         ),
@@ -95,6 +96,7 @@ export const TrackList = () => {
                 disabled: !row.getCanSelect(),
                 indeterminate: row.getIsSomeSelected(),
                 onChange: row.getToggleSelectedHandler(),
+                testId: `track-checkbox-${row.id}`,
               }}
             />
           </div>
