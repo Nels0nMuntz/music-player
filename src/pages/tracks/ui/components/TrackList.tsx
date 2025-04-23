@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { toast } from "sonner";
+import { useCallback, useMemo } from "react";
 import {
   Header,
   flexRender,
@@ -22,9 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui";
-import { cn, formatDate, useDebounce } from "@/shared/lib";
+import { cn, formatDate } from "@/shared/lib";
 import { Track } from "@/entities/track";
-import { useGenresQuery } from "@/entities/genres";
 import {
   DeleteFileButton,
   PlayTrackButton,
@@ -35,14 +33,13 @@ import {
   useSorting,
   useFilters,
   usePagination,
-  useSearchText,
   useSettingsActions,
   useSelections,
 } from "@/shared/model";
-import { useTracksQuery } from "../../api/useTracksQuery";
 import { TracksPagination } from "./TracksPagination";
 import { ActionsMenu } from "./ActionsMenu";
 import TableSkeleton from "./TrackListSkeleton";
+import { useTracksData } from "../../lib/useTracksData";
 
 type OnChangeFn<T> = (updaterOrValue: T | ((old: T) => T)) => void;
 
@@ -52,27 +49,11 @@ export const TrackList = () => {
   const sorting = useSorting();
   const filters = useFilters();
   const pagination = usePagination();
-  const searchText = useSearchText();
   const rowSelection = useSelections();
-  const debouncedSearchText = useDebounce(searchText, 500);
-  const { setSorting, setFilters, setPagination, setIsSearching, setSelections } =
+  const {genresData, tracksData, isLoading} = useTracksData()
+  const { setSorting, setFilters, setPagination, setSelections } =
     useSettingsActions();
-  const { genresData = [], genresError, isLoadingGenres } = useGenresQuery();
-  const { tracksData, tracksError, isLoadingTracks } = useTracksQuery({
-    pagination,
-    sorting: {
-      sortBy: sorting[0]?.id,
-      order: sorting[0]?.desc ? "desc" : "asc",
-    },
-    filters: {
-      artist: filters.artist,
-      genre: filters.genres,
-    },
-    search: debouncedSearchText,
-    queryOptions: {
-      placeholderData: (oldData) => oldData,
-    },
-  });
+  
 
   const columns = useMemo<ColumnDef<Track>[]>(
     () => [
@@ -226,37 +207,11 @@ export const TrackList = () => {
     },
   });
 
-  useEffect(() => {
-    if (searchText) {
-      setSorting([]);
-      setPagination({
-        pageIndex: 0,
-        pageSize: 10,
-      });
-      setFilters({
-        artist: "",
-        genres: "",
-      });
-      setIsSearching(isLoadingTracks);
-    } else {
-      setIsSearching(false);
-    }
-  }, [searchText, isLoadingTracks]);
-
-  const sortToggler = (header: Header<Track, unknown>) => {
+  const toggleSort = (header: Header<Track, unknown>) => {
     if (header.column.getCanSort()) {
       header.column.toggleSorting(undefined, true);
     }
   };
-
-  if (tracksError) {
-    toast.error(tracksError.message);
-  }
-  if (genresError) {
-    toast.error(genresError.message);
-  }
-
-  const isLoading = isLoadingTracks || isLoadingGenres;
 
   if (isLoading) return <TableSkeleton />;
 
@@ -310,7 +265,7 @@ export const TrackList = () => {
                           />
                         )}
                         <button
-                          onClick={() => sortToggler(header)}
+                          onClick={() => toggleSort(header)}
                           className="flex items-center gap-x-2 hover:cursor-pointer group/sort"
                           data-testid="sort-select"
                         >
