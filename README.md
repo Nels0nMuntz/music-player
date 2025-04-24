@@ -20,4 +20,4 @@ The project follows the **Feature-Sliced Design (FSD)** methodology for scalable
 ## 🧪 Extra Tasks
 
 - 🔁 **Bulk delete** tracks
-- ⚡ **Optimistic UI updates** for a smoother user experience
+- ⚡ **Optimistic UI updates**
