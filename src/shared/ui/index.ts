@@ -104,4 +104,5 @@ export { Skeleton } from "./tailwind/skeleton";
 export { Spinner } from "./Spinner";
 export { TrackForm } from "./TrackForm";
 export { MultipleSelector } from "./MultipleSelector";
-export { IndeterminateCheckbox } from "./IndeterminateCheckbox";
+export { IndeterminateCheckbox } from "./IndeterminateCheckbox"
+export { LoadingIndicator } from "./LoadingIndicator";
